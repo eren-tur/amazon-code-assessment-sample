@@ -1,0 +1,179 @@
+<p>There is a school that has classes of students and each class will be having a final exam. You are given a 2D integer array&nbsp;<code>classes</code>, where&nbsp;<code>classes[i] = [pass<sub>i</sub>, total<sub>i</sub>]</code>. You know beforehand that in the&nbsp;<code>i<sup>th</sup></code>&nbsp;class, there are&nbsp;<code>total<sub>i</sub></code>&nbsp;total students, but only&nbsp;<code>pass<sub>i</sub></code>&nbsp;number of students will pass the exam.</p>
+<p>You are also given an integer&nbsp;<code>extraStudents</code>. There are another&nbsp;<code>extraStudents</code>&nbsp;brilliant students that are&nbsp;<strong>guaranteed</strong>&nbsp;to pass the exam of any class they are assigned to. You want to assign each of the&nbsp;<code>extraStudents</code>&nbsp;students to a class in a way that&nbsp;<strong>maximizes</strong>&nbsp;the&nbsp;<strong>average</strong>&nbsp;pass ratio across&nbsp;<strong>all</strong>&nbsp;the classes.</p>
+
+
+---------------------
+O(e log n); e == extraStudents; n == len(classes);
+----------------
+class Classes{
+    int pass;
+    int total;
+    double incr;
+
+    Classes(int pass,int total,double incr){
+        this.pass=pass;
+        this.total=total;
+        this.incr=incr;
+    }
+}
+
+class Heap{
+    private int heapSize;
+    Classes[] data;
+
+    Heap(int heapSize,int[][] classes){
+        this.heapSize = heapSize;
+        data = new Classes[heapSize];
+        for(int i=0;i<heapSize;i++){
+            double newIncr = (double)((classes[i][0]+1)/(double)(classes[i][1]+1)) -
+                (double)(classes[i][0]/(double)classes[i][1]);
+            data[i]=new Classes(classes[i][0],classes[i][1],newIncr);
+        }
+    }
+
+    void buildHeap(){
+        for(int i=Parent(heapSize-1);i>=0;i--)heapify(i);
+    }
+
+    void heapify(int index){
+        if(!isLeaf(index)){
+            int greatestChildIndex = findGreatestChildIndex(index);
+            if(Double.compare(this.data[index].incr,this.data[greatestChildIndex].incr)<0){
+                swap(index,greatestChildIndex);
+                heapify(greatestChildIndex);
+            }
+        }
+    }
+
+    int Parent(int index){
+        return (index-1)/2;
+    }
+
+    int findGreatestChildIndex(int parent){
+        if(rightChildExist(parent)){
+            if(Double.compare(data[2*parent+1].incr, data[2*parent+2].incr)<0)return 2*parent+2;
+            //if(data[2*parent+1].incr < data[2*parent+2].incr)return 2*parent+2;
+            return 2*parent+1;
+        }else return 2*parent+1;
+    }
+
+    boolean rightChildExist(int parent){
+        if(parent*2+2<heapSize)return true;
+        return false;
+    }
+
+    boolean isLeaf(int index){
+        if(2*index+1<heapSize)return false;
+        return true;
+    }
+
+    void swap(int a,int b){
+        Classes temp = data[a];
+        data[a]=data[b];
+        data[b]=temp;
+    }
+
+    Classes delMin(){
+        Classes min = data[0];
+        swap(0,heapSize-1);
+        heapSize--;
+        heapify(0);
+        return min;
+    }
+
+    void insertPoint(Classes p){
+        this.data[heapSize]=p;
+        heapSize++;
+        int index=Parent(heapSize-1);
+        int childIndex = heapSize-1;
+        while(childIndex>0){
+            if(data[index].incr < data[childIndex].incr){
+                swap(index,childIndex);
+                int temp = index;
+                index=Parent(index);
+                childIndex = temp;
+            }else break;
+        }
+    }
+
+}
+
+class Solution {
+    public double maxAverageRatio(int[][] classes, int extraStudents) {
+        double currentAvg = 0;
+
+        for(int i=0;i<classes.length;i++){
+            double val=classes[i][0]/(double)classes[i][1];
+            currentAvg+=val;
+        }
+
+        Heap heap = new Heap(classes.length,classes);
+        heap.buildHeap();
+
+        for(int i=0;i<extraStudents;i++){
+            Classes temp = heap.delMin();
+            currentAvg+=temp.incr;
+            temp.pass++;
+            temp.total++;
+            double newIncr = ((temp.pass+1)/(double)(temp.total+1)) -
+                (temp.pass/(double)temp.total);
+            temp.incr=newIncr;
+            heap.insertPoint(temp);
+
+        }
+        return currentAvg/classes.length;
+    }
+}
+--------------------------------
+
+
+class AmazonFiveStarSeller
+    {
+        public void Execute()
+        {
+            int threshold = 77;
+            int[][] data = new int[][]
+            {
+                new int[] {4, 4},
+                new int[] {1, 2},
+                new int[] {3, 6},
+            };
+            int result = GetRequiredFiveStars(data, threshold);
+        }
+
+        private int GetRequiredFiveStars(int[][] data, int threshold)
+        {
+            int result = 0;
+            int totalProducts = data.Length;
+            var reqdSum = threshold * totalProducts * 1.0/ 100;
+
+            double currentSum = 0;
+            while(currentSum < reqdSum )
+            {
+                currentSum = 0;
+                double maxContribution = 0;
+                int productItem = -1;
+                for (int i = 0; i < data.Length; i++)
+                {
+                    var contribution = (data[i][0] + 1)* 1.0/ (data[i][1] + 1) - data[i][0] * 1.0/ data[i][1];
+                    if (maxContribution < contribution)
+                    {
+                        maxContribution = contribution;
+                        productItem = i;
+                    }
+                    currentSum += data[i][0] * 1.0 / data[i][1];
+                }
+
+                currentSum = currentSum - data[productItem][0] * 1.0 / data[productItem][1];
+                data[productItem][0] = data[productItem][0] + 1;
+                data[productItem][1] = data[productItem][1] + 1;
+                currentSum = currentSum + data[productItem][0] * 1.0 / data[productItem][1];
+                result++;
+            }
+
+            return result;
+        }
+    }
+
+    ----------------
+

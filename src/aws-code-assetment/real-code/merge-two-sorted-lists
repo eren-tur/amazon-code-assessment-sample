@@ -1,0 +1,50 @@
+<p>Merge two sorted linked lists and return it as a new sorted list. The new list should be made by splicing together the nodes of the given two lists.</p>
+
+---------------------
+
+
+-----------------------
+
+class Solution {
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if (l2 == null) return l1;
+        if (l1 == null) return l2;
+
+        // ensure l1[0] < l2[0] so we have the begining of the sorted list
+        if (l2.val < l1.val) {
+            ListNode swp = l2;
+            l2=l1;
+            l1=swp;
+        }
+
+		// l1 is now our inplace target, and we will pull from l2
+		// we will keep a pointer into l1 that is the last sorted element
+		// so we start this at the head of l1
+        ListNode t = l1;
+
+        while (t.next != null && l2 != null) { // while not end of list 1 or list 2
+            // skip over values less than next l2
+            while (t.next != null && t.next.val < l2.val) {
+                t = t.next;
+            }
+
+            // take the head of l2
+            ListNode insert = l2;
+            // advance l2
+            l2 = l2.next;
+
+            if (t != null) {
+                // insert the head of l2
+                ListNode tmp = t.next;
+                t.next = insert;
+                t.next.next = tmp;
+            }
+        }
+
+        if (t.next == null) { // we know here at least one list is empty, so if there's no more in l1, l2 may have some
+            t.next = l2;      // just take rest of l2, (which might also be empty)
+        }
+
+        return l1;
+    }
+}

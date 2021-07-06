@@ -1,0 +1,32 @@
+| C# | Space: O(n), Time: O(n)
+--
+
+public class Solution {
+    public int TotalFruit(int[] fruits) {
+        int k = 2;
+        int start = 0;
+        int max = 0;
+        var map = new Dictionary<int, int>();
+
+        for (int end = 0; end < fruits.Length; end++) {
+            int fruitType = fruits[end];
+            if (!map.ContainsKey(fruitType)) {
+                map.Add(fruitType, 0);
+            }
+            map[fruitType]++;
+
+            while (map.Count > k) {
+                int prevFruitType = fruits[start];
+                map[prevFruitType]--;
+                if (map[prevFruitType] == 0) {
+                    map.Remove(prevFruitType);
+                }
+                start++;
+            }
+
+            max = Math.Max(max, end - start + 1);
+        }
+
+        return max;
+    }
+}

@@ -1,0 +1,63 @@
+<p>You are given an array of&nbsp;<code>logs</code>. Each log is a space-delimited string of words, where the first word is the&nbsp;<strong>identifier</strong>.</p>
+<ul><li><strong>Letter-logs</strong>: All words (except the identifier) consist of lowercase English letters.</li><li><strong>Digit-logs</strong>: All words (except the identifier) consist of digits.</li></ul>
+<ol><li>The&nbsp;<strong>letter-logs</strong>&nbsp;come before all&nbsp;<strong>digit-logs</strong>.</li><li>The&nbsp;<strong>letter-logs</strong>&nbsp;are sorted lexicographically by their contents. If their contents are the same, then sort them lexicographically by their identifiers.</li><li>The&nbsp;<strong>digit-logs</strong>&nbsp;maintain their relative ordering.</li></ol>
+
+<pre class="wp-block-preformatted"><strong>Input:</strong> logs = ["dig1 8 1 5 1","let1 art can","dig2 3 6","let2 own kit dig","let3 art zero"]
+<strong>Output:</strong> ["let1 art can","let3 art zero","let2 own kit dig","dig1 8 1 5 1","dig2 3 6"]
+<strong>Explanation:</strong>
+The letter-log contents are all different, so their ordering is "art can", "art zero", "own kit dig".
+The digit-logs have a relative order of "dig1 8 1 5 1", "dig2 3 6".
+</pre>
+
+--------------------
+So I think the total complexity would be O(M * LogM + n) * N ?
+---------------------
+
+private static final Comparator<String> COMP = (a, b) -> {
+        int idA = a.indexOf(" ");
+        int idB = b.indexOf(" ");
+        int comp = a.substring(idA + 1).compareTo(b.substring(idB + 1));
+
+        if (comp == 0) {
+            comp = a.substring(0, idA).compareTo(b.substring(0, idB));
+        }
+
+        return comp;
+    };
+
+    public String[] reorderLogFiles(String[] logs) {
+        int pivot = partition(logs, logs.length);
+
+        if (pivot >= 0) {
+            Arrays.sort(logs, 0, pivot + 1, COMP);
+        }
+
+        return logs;
+    }
+
+    private int partition(String[] logs, int n) {
+        int pivot = n - 1;
+
+        for (int i = n - 1; i >= 0; i--) {
+            if (isDigit(logs[i])) {
+                String tmp = logs[pivot];
+                logs[pivot] = logs[i];
+                logs[i] = tmp;
+                pivot--;
+            }
+        }
+
+        return pivot;
+    }
+
+    private boolean isDigit(String log) {
+        int i = 0;
+
+        while (log.charAt(i) != ' ') {
+            i++;
+        }
+
+        i++;
+
+        return Character.isDigit(log.charAt(i));
+    }

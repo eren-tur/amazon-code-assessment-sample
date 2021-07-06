@@ -1,0 +1,52 @@
+<p>You want to schedule a list of jobs in&nbsp;<code>d</code>&nbsp;days. Jobs are dependent (i.e To work on the&nbsp;<code>i-th</code>&nbsp;job, you have to finish all the jobs&nbsp;<code>j</code>&nbsp;where&nbsp;<code>0 &lt;= j &lt; i</code>).</p>
+<p>You have to finish&nbsp;<strong>at least</strong>&nbsp;one task every day. The difficulty of a job schedule is the sum of difficulties of each day of the&nbsp;<code>d</code>&nbsp;days. The difficulty of a day is the maximum difficulty of a job done in that day.</p>
+
+-------------------
+
+----------------
+class Solution {
+    public int minDiff(int[] jobs, int start, int n, int d, int[][] dp){
+        if (n > d)
+            return 0;
+
+        //if calculated before
+        if (dp[start][n] != -1)
+            return dp[start][n];
+
+        //int the last step, we need to take the maximum of the rest of elements
+        if (n == d){
+            int currentMax = Integer.MIN_VALUE;
+            for (int i=start;i<jobs.length;i++){
+                currentMax = Math.max(currentMax, jobs[i]);
+            }
+            dp[start][n] = currentMax;
+            return currentMax;
+        }
+
+
+        int min = Integer.MAX_VALUE;
+        int currentMax = Integer.MIN_VALUE;
+        //loop until before jobs.length-(d-n) to make sure we have enough jobs for the rest of the days
+        for (int i=start;i<jobs.length-(d-n);i++){
+            currentMax = Math.max(currentMax, jobs[i]);
+            min = Math.min(min, minDiff(jobs, i+1, n+1, d, dp)+currentMax);
+        }
+        dp[start][n] = min;
+        return min;
+    }
+
+    public int minDifficulty(int[] jobDifficulty, int d) {
+        //if days is more than the jobs, then we can't proceed
+        if (d > jobDifficulty.length)
+            return -1;
+
+        //init our dynamic programming array
+        int[][] dp = new int[jobDifficulty.length][d+1];
+        for (int i=0;i<dp.length;i++){
+            for (int j=0;j<dp[0].length;j++)
+                dp[i][j] = -1;
+        }
+
+        return minDiff(jobDifficulty,0, 1, d, dp);
+    }
+}

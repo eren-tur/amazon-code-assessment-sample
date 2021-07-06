@@ -1,0 +1,42 @@
+<p>You are given&nbsp;<code>nums</code>, an array of positive integers of size&nbsp;<code>2 * n</code>. You must perform&nbsp;<code>n</code>&nbsp;operations on this array.</p>
+<p>In the&nbsp;<code>i<sup>th</sup></code>&nbsp;operation&nbsp;<strong>(1-indexed)</strong>, you will:</p>
+<ul><li>Choose two elements,&nbsp;<code>x</code>&nbsp;and&nbsp;<code>y</code>.</li><li>Receive a score of&nbsp;<code>i * gcd(x, y)</code>.</li><li>Remove&nbsp;<code>x</code>&nbsp;and&nbsp;<code>y</code>&nbsp;from&nbsp;<code>nums</code>.</li></ul>
+
+-----------
+
+-------
+
+class Solution {
+	int[] map;
+	int[][] dp;
+	public int gcd(int a, int b){
+		if (b == 0)
+			return a;
+		return gcd(b, a % b);
+	}
+	public int maxScore(int[] nums) {
+		map = new int[16384];
+		Arrays.fill(map, -1);
+		dp = new int[nums.length][nums.length];
+		for(int i=0; i<dp.length; i++) {
+			for(int j=i+1; j<dp[0].length; j++) {
+				dp[i][j] = gcd(nums[i], nums[j]);
+			}
+		}
+		return find(nums, 0, 1);
+	}
+	public int find(int[] nums, int mask, int idx) {
+		if(map[mask] != -1) return map[mask];
+		int ans = 0;
+		for(int i=0; i<nums.length-1; i++) {
+			for(int j=i+1; j<nums.length; j++) {
+				int a = (1<<i) + (1<<j);
+				if((mask&a) == 0) {
+					ans = Math.max(ans, idx*dp[i][j] + find(nums, mask|a, idx+1));
+				}
+			}
+		}
+		map[mask] = ans;
+		return ans;
+	}
+}

@@ -1,0 +1,83 @@
+
+<p>On an infinite plane, a robot initially stands at&nbsp;<code>(0, 0)</code>&nbsp;and faces north. The robot can receive one of three instructions:</p>
+<ul><li><code>"G"</code>: go straight 1 unit;</li><li><code>"L"</code>: turn 90 degrees to the left;</li><li><code>"R"</code>: turn 90 degrees to the right.</li></ul>
+<p>Return&nbsp;<code>true</code>&nbsp;if and only if there exists a circle in the plane such that the robot never leaves the circle.</p>
+
+<pre class="wp-block-preformatted"><strong>Input:</strong> instructions = "GGLLGG"
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The robot moves from (0,0) to (0,2), turns 180 degrees, and then returns to (0,0).
+When repeating these instructions, the robot remains in the circle of radius 2 centered at the origin.</pre>
+
+------------
+
+--------------
+class Solution {
+    public boolean isRobotBounded(String instructions) {
+        // init position
+        int[] pos = new int[]{0, 0};
+
+        // directions north, east, south, west
+        int[][] dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+        int face = 0;
+        char[] ins = instructions.toCharArray();
+
+        for(char c: ins) {
+            if(c == 'L') {
+                face = face == 0 ? 3 : face - 1;
+            }
+            else if(c == 'R') {
+                face = face == 3 ? 0 : face + 1;
+            }
+            else {
+                pos[0] = pos[0] + dirs[face][0];
+                pos[1] = pos[1] + dirs[face][1];
+            }
+        }
+        return (face != 0 || (pos[0] == 0 && pos[1] == 0));
+    }
+}
+--------------------
+
+public boolean isRobotBounded(String instructions) {
+
+    if(instructions.length() == 1){
+        return false;
+    }
+
+
+    int x =0;
+    int y =0;
+    int dir = 0;
+    for(int i =0;i<instructions.length();i++){
+        char ch = instructions.charAt(i);
+        if(ch == 'R')
+        {
+            dir = (dir + 1) % 4;
+            continue;
+        }
+        if(ch == 'L'){
+            dir = (4+(dir-1))%4;
+            continue;
+        }
+        if(dir == 0){
+            y++;
+        }
+        if(dir == 1){
+            x++;
+        }
+        if(dir == 2){
+            y--;
+        }
+        if(dir == 3){
+            x--;
+        }
+    }
+
+
+    if(dir != 0  || ( x == 0 && y == 0 )){
+        return true;
+    }else{
+        return false;
+    }
+}

@@ -1,0 +1,88 @@
+There are some processes that need to be executed. Amount of a load that process causes on a server that runs it, is being represented by a single integer. Total load caused on a server is the sum of the loads of all the processes that run on that server. You have at your disposal two servers, on which mentioned processes can be run. Your goal is to distribute given processes between those two servers in the way that, absolute difference of their loads will be minimized.
+
+Given an array of n integers, of which represents loads caused by successive processes, return the minimum absolute difference of server loads.
+
+Example 1:
+
+Input: [1, 2, 3, 4, 5]
+Output: 1
+Explanation:
+We can distribute the processes with loads [1, 2, 4] to the first server and [3, 5] to the second one,
+so that their total loads will be 7 and 8, respectively, and the difference of their loads will be equal to 1.
+
+---------------------
+
+-------------------
+
+public static void main(String[] args) {
+	    int[] arr = {1,2,8,19}; // answer 8
+		System.out.println(getResult(arr));
+	}
+	static int getResult(int[] arr){
+	    int sum = 0;
+	    Arrays.sort(arr);
+
+	   for(int a: arr){
+	       sum += a;
+	   }
+	   int[][] dp = new int[arr.length][sum/2 + 1];
+
+	   for(int i=0;i<arr.length;i++){
+	       for(int j=0;j<dp[i].length;j++){
+	           if( i == 0){
+	               if(arr[i] <= j){
+	                   dp[i][j] = Math.max(0,  arr[i]);
+	                }else{
+	                   dp[i][j] = 0;
+	                }
+	           }else{
+	               if(arr[i] > j){
+	                   dp[i][j] = dp[i- 1][j];
+	               }else{
+	                   dp[i][j] = Math.max(dp[i - 1][j], dp[i - 1][j - arr[i]] + arr[i]);
+	               }
+	           }
+
+	       }
+	   }
+	   return (sum - 2 * dp[arr.length-1][sum/2]);
+	}
+
+	------------------------------------
+
+public int absDiff(int[] A) {
+	Arrays.sort(A);
+	int sum = 0;
+	for(int a : A) sum += a;
+	int[][] dp = new int[A.length][sum / 2 + 1];
+	for(int i = 0; i < A.length; i++) {
+		for(int j = 1; j < sum/2 + 1; j++) {
+			if(A[i] <  j) {
+				dp[i][j] = dp[i - 1][j];
+} else {
+	dp[i][j] = Math.max(A[i] + dp[i - 1][j - A[i]], dp[i-1][j]);
+}
+}
+}
+return sum - 2 * dp[A.length - 1][sum / 2];
+}
+
+-----------------------
+
+def minAbs(nums):
+  s=sum(nums)//2
+  n=len(nums)
+  dp=[[0 for _ in range(s+1)] for x in range(n+1)]
+  for i in range(1,n+1):
+      for j in range(1,s+1):
+          if nums[i-1]<=j:
+              dp[i][j]=max(dp[i-1][j], nums[i-1]+dp[i-1][j-nums[i-1]])
+          else:
+              dp[i][j]=dp[i-1][j]
+  '''return second server loads - first server loads'''
+  return (sum(nums)-dp[-1][-1])-dp[-1][-1]
+'''four testcases'''
+print(minAbs([1, 2, 3, 4, 5]))
+print(minAbs([10,10,9,9,2]))
+print(minAbs([]))
+print(minAbs([1]))

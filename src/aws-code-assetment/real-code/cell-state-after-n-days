@@ -1,0 +1,94 @@
+The 8 cells are lined up in a row, and each cell is either empty or empty.
+
+Every day, whether the cell is occupied or vacant, it will be changed according to the following rules:
+
+If two adjacent rooms of a cell are occupied or empty, the cell will be occupied.
+Otherwise, it will be vacant.
+(Please note that because the cells in the prison are lined up, the first and last rooms in the row cannot have two adjacent rooms.)
+
+We describe the current state of the prison in the following way:i If the cell is occupied, thencell[i]==1Otherwisecell[i]==0。
+
+According to the initial state of the prison,N The status of returning to prison after the day (and the above N changes).
+
+
+
+https://www.programmersought.com/article/5629458073/
+
+
+---------------------------
+
+Active and Inactive cells after k Days
+Difficulty Level : Easy
+Last Updated : 07 Apr, 2021
+Given a binary array of size n where n > 3. A true (or 1) value in the array means active and false (or 0) means inactive. Given a number k, the task is to find count of active and inactive cells after k days. After every day, status of i’th cell becomes active if left and right cells are not same and inactive if left and right cell are same (both 0 or both 1).
+Since there are no cells before leftmost and after rightmost cells, the value cells before leftmost and after rightmost cells is always considered as 0 (or inactive).
+
+-----------------
+
+// C# program to count active and
+// inactive cells after k days
+using System;
+
+class GFG {
+
+// cells[] - store current status
+// of cells n - Number of cells
+// temp[] - to perform intermediate
+// operations k - number of days
+// active - count of active cells
+// after k days inactive - count
+// of active cells after k days
+static void activeAndInactive(bool []cells,
+							int n, int k)
+{
+
+	// copy cells[] array into
+	// temp [] array
+	bool []temp = new bool[n];
+	for (int i = 0; i < n; i++)
+	temp[i] = cells[i];
+
+	// Iterate for k days
+	while (k-- > 0) {
+
+	// Finding next values
+	// for corner cells
+	temp[0] = false ^ cells[1];
+	temp[n - 1] = false ^ cells[n - 2];
+
+	// Compute values of intermediate cells
+	// If both cells active or inactive, then
+	// temp[i]=0 else temp[i] = 1.
+	for (int i = 1; i <= n - 2; i++)
+		temp[i] = cells[i - 1] ^ cells[i + 1];
+
+	// Copy temp[] to cells[]
+	// for next iteration
+	for (int i = 0; i < n; i++)
+		cells[i] = temp[i];
+	}
+
+	// count active and inactive cells
+	int active = 0, inactive = 0;
+	for (int i = 0; i < n; i++)
+	if (cells[i] == true)
+		active++;
+	else
+		inactive++;
+
+	Console.Write("Active Cells = " + active + ", " +
+				"Inactive Cells = " + inactive);
+}
+
+// Driver code
+public static void Main()
+{
+	bool []cells = {false, true, false, true,
+					false, true, false, true};
+	int k = 3;
+	int n = cells.Length;
+	activeAndInactive(cells, n, k);
+}
+}
+
+// This code is contributed by Nitin Mittal.

@@ -1,0 +1,32 @@
+<p>You are given a rectangular cake of size&nbsp;<code>h x w</code>&nbsp;and two arrays of integers&nbsp;<code>horizontalCuts</code>&nbsp;and&nbsp;<code>verticalCuts</code>&nbsp;where:</p>
+<ul><li><code>horizontalCuts[i]</code>&nbsp;is the distance from the top of the rectangular cake to the&nbsp;<code>i<sup>th</sup></code>&nbsp;horizontal cut and similarly, and</li><li><code>verticalCuts[j]</code>&nbsp;is the distance from the left of the rectangular cake to the&nbsp;<code>j<sup>th</sup></code>&nbsp;vertical cut.</li></ul>
+
+<p>Return&nbsp;<em>the maximum area of a piece of cake after you cut at each horizontal and vertical position provided in the arrays</em>&nbsp;<code>horizontalCuts</code>&nbsp;<em>and</em>&nbsp;<code>verticalCuts</code>. Since the answer can be a large number, return this&nbsp;<strong>modulo</strong>&nbsp;<code>10<sup>9</sup>&nbsp;+ 7</code>.</p>
+
+--------------------------------
+
+
+----------------------------------
+
+class Solution {
+    public int maxArea(int h, int w, int[] horizontalCuts, int[] verticalCuts) {
+        Arrays.sort(horizontalCuts);
+        Arrays.sort(verticalCuts);
+
+        long maxHorizontalGap = horizontalCuts[0];
+        int index = 0;
+        for(index = 1; index < horizontalCuts.length; index++){
+            maxHorizontalGap = (long)Math.max(maxHorizontalGap, horizontalCuts[index] - horizontalCuts[index - 1]);
+        }
+        maxHorizontalGap = (long)Math.max(maxHorizontalGap, h - horizontalCuts[index - 1]);
+
+        long maxVerticalGap = verticalCuts[0];
+        index = 0;
+        for(index = 1; index < verticalCuts.length; index++){
+            maxVerticalGap = (long)Math.max(maxVerticalGap, verticalCuts[index] - verticalCuts[index - 1]);
+        }
+        maxVerticalGap = (long)Math.max(maxVerticalGap, w - verticalCuts[index - 1]);
+
+        return (int)((maxHorizontalGap * maxVerticalGap) % 1000000007 );
+    }
+}

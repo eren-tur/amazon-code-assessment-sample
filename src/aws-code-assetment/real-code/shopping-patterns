@@ -1,0 +1,37 @@
+<p>You are given an undirected graph. You are given an integer&nbsp;<code>n</code>&nbsp;which is the number of nodes in the graph and an array&nbsp;<code>edges</code>, where each&nbsp;<code>edges[i] = [u<sub>i</sub>, v<sub>i</sub>]</code>&nbsp;indicates that there is an undirected edge between&nbsp;<code>u<sub>i</sub></code>&nbsp;and&nbsp;<code>v<sub>i</sub></code>.</p>
+<p>A&nbsp;<strong>connected trio</strong>&nbsp;is a set of&nbsp;<strong>three</strong>&nbsp;nodes where there is an edge between&nbsp;<strong>every</strong>&nbsp;pair of them.</p>
+
+---------------------
+The complexity is O(E * V), where E is the number of edges, and V is the number of vertices (which is N). In worst case scenario,
+there would be ~N^2 edges, so the time complexity is O(N^3).
+
+---------------
+
+class Solution {
+    public int minTrioDegree(int n, int[][] edges) {
+        int min = Integer.MAX_VALUE;
+        Map<Integer, Integer> degrees = new HashMap<>(); // vertex, degree
+        boolean[][] isEdge = new boolean[n + 1][n + 1];
+
+        for (int[] edge : edges) {
+            degrees.put(edge[0], degrees.getOrDefault(edge[0], 0) + 1);
+            degrees.put(edge[1], degrees.getOrDefault(edge[1], 0) + 1);
+            isEdge[edge[0]][edge[1]] = true;
+            isEdge[edge[1]][edge[0]] = true;
+        }
+
+        for (int[] edge : edges) {
+            for (int i = 1; i <= n; i++) {
+                if (isEdge[i][edge[0]] && isEdge[i][edge[1]]) {
+					// subtract 6 because we do not count inner edges of a trio
+                    int degree = degrees.get(i) + degrees.get(edge[0]) + degrees.get(edge[1]) - 6;
+                    min = Math.min(min, degree);
+                }
+            }
+        }
+
+        if (min == Integer.MAX_VALUE)
+            return -1;
+        return min;
+    }
+}

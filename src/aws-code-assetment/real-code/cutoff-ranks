@@ -1,0 +1,22 @@
+A group of work friends at Amazon is playing a compettetive video game together...
+
+Sorunun tamamı : https://www.youtube.com/watch?v=Wls9UBz1pKU
+------------------
+runtime: O(N log (N))
+space: O(1)
+--------------------
+
+public int cutOffRank(int cutOffRank, int num, int[] scores) {
+    if(cutOffRank == 0) return 0;
+    int[] cache = new int[101];
+    for (int n : scores){
+        cache[n]++;
+    }
+    int  res = 0;
+    for (int i = 100; i > 0; i--){
+        if (cutOffRank <= 0) break;
+        cutOffRank -= cache[i];
+        res += cache[i];
+    }
+    return res;
+}

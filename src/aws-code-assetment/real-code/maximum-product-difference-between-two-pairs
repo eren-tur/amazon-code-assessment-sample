@@ -1,0 +1,19 @@
+<p>The&nbsp;<strong>product difference</strong>&nbsp;between two pairs&nbsp;<code>(a, b)</code>&nbsp;and&nbsp;<code>(c, d)</code>&nbsp;is defined as&nbsp;<code>(a * b) - (c * d)</code>.</p>
+
+<li>For example, the product difference between&nbsp;<code>(5, 6)</code>&nbsp;and&nbsp;<code>(2, 7)</code>&nbsp;is&nbsp;<code>(5 * 6) - (2 * 7) = 16</code>.</li>
+
+<p>Given an integer array&nbsp;<code>nums</code>, choose four&nbsp;<strong>distinct</strong>&nbsp;indices&nbsp;<code>w</code>,&nbsp;<code>x</code>,&nbsp;<code>y</code>, and&nbsp;<code>z</code>&nbsp;such that the&nbsp;<strong>product difference</strong>&nbsp;between pairs&nbsp;<code>(nums[w], nums[x])</code>&nbsp;and&nbsp;<code>(nums[y], nums[z])</code>&nbsp;is&nbsp;<strong>maximized</strong>.</p>
+
+------------
+
+
+-------
+
+#JAVA
+
+class Solution {
+    public int maxProductDifference(int[] nums) {
+        Arrays.sort(nums);
+        return ((nums[nums.length-1]*nums[nums.length-2])-(nums[0]*nums[1]));
+    }
+}

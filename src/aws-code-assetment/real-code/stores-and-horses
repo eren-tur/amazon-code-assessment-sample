@@ -1,0 +1,51 @@
+You are given 2 arrays representing integer locations of stores and houses (each location in this problem is one-dementional). For each house, find the store closest to it.
+Return an integer array result where result[i] should denote the location of the store closest to the i-th house. If many stores are equidistant from a particular house, choose the store with the smallest numerical location. Note that there may be multiple stores and houses at the same location.
+
+Example 1:
+
+Input: houses = [5, 10, 17], stores = [1, 5, 20, 11, 16]
+Output: [5, 11, 16]
+Explanation:
+The closest store to the house at location 5 is the store at the same location.
+The closest store to the house at location 10 is the store at the location 11.
+The closest store to the house at location 17 is the store at the location 16.
+
+---------------
+
+Binary Search solution
+Time: O(Nlog(N) + Mlog(N)) where N is the number of stores and M is the number of houses.
+Space: O(M) where M is the number of houses we have. This is used for creating the result.
+
+----------------
+
+ public int[] findStores(int[] houses, int[] stores) {
+        int n = houses.length, m = stores.length;
+        int[] result = new int[n];
+        Arrays.sort(stores);
+        for (int i = 0; i < n; i++) {
+            int house = houses[i], dist = Integer.MAX_VALUE, store = 0;
+            int left = 0, right = m - 1;
+            while (left <= right) {
+                int mid = left + (right - left) / 2;
+                if (stores[mid] == house) {
+                    store = house;
+                    break;
+                } else {
+                    int d = Math.abs(house - stores[mid]);
+                    if (d == dist) {
+                        store = Math.min(store, stores[mid]);
+                    } else if (d < dist) {
+                        dist = d;
+                        store = stores[mid];
+                    }
+                    if (stores[mid] < house) {
+                        left = mid + 1;
+                    } else {
+                        right = mid - 1;
+                    }
+                }
+            }
+            result[i] = store;
+        }
+        return result;
+    }

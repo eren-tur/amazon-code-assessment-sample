@@ -1,0 +1,118 @@
+6. Device Name System Suggested Problem Name: Device Name System Suggested Function Name: deviceNamesSystem Create unique device names to be used in a residential loT (Internet of Things) system. If a device name already exists in the system, an integer number is added at the end of the name to make it unique. The integer added starts with 1 and is incremented by 1 for each new request of an existing device name. Given a list of device name requests, process all requests and return an array of the corresponding unique device names. Example n = 6 devicenames = ['switch', 'tv, 'switch', tv, 'switch, tv . devicenames[0] = "switch" is unique, uniqueDevicename[0] = "switch . devicenames[1] - "V" is unique. uniqueDevicename[0] =*** • devicenames[2] = devicenames[0]. Add 1 at the end the previous unique username "switch", uniqueDevicename[2]="switch 1" devicenames[3] = devicenames/1). Add 1 at the end the previous unique username "1", uniqueDevicename/3)="tv1" • devicenames(4) - devicenames[2]. Increment by 1 the number at the end of the previous unique username "switch 1", uniqueDevicerres [4] ="switch2 • devicenames[5] - devicenames[3]. Increment by the number at the end of the previous unique username "tv?", unique Devicenames[5="v2 • return unique Devicenames = ['switch', 'TV, switchT', '1', 'switch, "TV2') Function Description Complete the function deviceNamessystem in the editor below. deviceNamesSystem has the following parameter(s): string devicenames(n): an array of device name strings in the order requested. Returns stringin), an array of string usernames in the order assigned Constraints • 1sns 104 • 1 s length of devicenameslu s 20 devicename/contains only lowercase English letters in the range ascii[a-z]. ► Input Format for Custom Testing
+Sample Case 0 Sample Input STDIN Function devicenames[] size n = 4 devicenames=["mixer", "toaster", "mixer","tv"] 4 mixer toaster mixer tv Sample Output o mixer toaster mixeri tv Explanation o • devicenames[0] = "mixer" is unique. uniqueDevicename[0] ="mixer" • devicenames[1] = "toaster" is unique. uniqueDevicename[1]="toaster" • devicenames[2] = devicenames[0]. Add 1 at the end the previous unique device name "mixer", uniqueDevicename[2]="mixer 1" • devicenames[3] = "tv" is unique, unique Devicename[3] ="tv" • unique Devicenames = ["mixer", "toaster", "mixer 1", "tv")
+
+----------------
+
+-----------------
+
+
+
+
+
+
+
+
+
+public static String[] deviceNamesSystem(String deviceNames[]) {
+
+      // creating an array of same size to keep the results
+
+      String uniqueNames[] = new String[deviceNames.length];
+
+      // looping from i=0 to deviceNames.length-1
+
+      for (int i = 0; i < deviceNames.length; i++) {
+
+            // fetching device name at index i
+
+            String name = deviceNames[i];
+
+            // initially assuming this is not a duplicate value
+
+            boolean duplicate = false;
+
+            // looping and checking if this value exist previously
+
+            for (int j = 0; j < i; j++) {
+
+                  if (uniqueNames[j].equals(name)) {
+
+                        // exists. setting duplicate to true and exiting inner loop
+
+                        duplicate = true;
+
+                        break;
+
+                  }
+
+            }
+
+            // if this is no duplicate, adding unchanged name to uniqueNames
+
+            // array
+
+            if (!duplicate) {
+
+                  uniqueNames[i] = name;
+
+            } else {
+
+                  // otherwise starting with id=1
+
+                  int id = 1;
+
+                  boolean exists = true;
+
+                  // looping as long as exists is true
+
+                  while (exists) {
+
+                        // initially assuming device with this name does not exist
+
+                        // already
+
+                        exists = false;
+
+                        // looping and checking the previous elements in uniqueNames
+
+                        // for devicename: name+id (here + is for concatenation)
+
+                        for (int j = 0; j < i; j++) {
+
+                              if (uniqueNames[j].equals(name + id)) {
+
+                                    // found, setting exists to true
+
+                                    exists = true;
+
+                                    // moving to next id
+
+                                    id++;
+
+                                    // exiting inner loop
+
+                                    break;
+
+                              }
+
+                        }
+
+                  }
+
+                  // after the loop, adding name+id to the uniqueNames array
+
+                  // example: if name is "switch", and id is 7, name+id returns
+
+                  // "switch7"
+
+                  uniqueNames[i] = name + id;
+
+            }
+
+      }
+
+      //returning the array
+
+      return uniqueNames;
+
+}
